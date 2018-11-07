@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace CandyLand
 {
+    public enum TileImages { RED, PURPLE, YELLOW, BLUE, ORANGE, GREEN, GRAMMA_NUT, JOLLY, MR_MINT, PLUMPY, PRINCESS_LOLLY, QUEEN_FROSTINE };
+    public enum Paths { GUMDROP, RAINBOW };
+
     public class Game
     {
         private bool _isGameOver = false;

@@ -2,12 +2,12 @@
 {
     public class PathEnterenceTile : Tile
     {
-        public string PathId { get; private set; }
+        public Paths Path { get; private set; }
 
-        public PathEnterenceTile(string id, string pathId)
+        public PathEnterenceTile(TileImages tileImage, Paths path)
         {
-            Id = id;
-            PathId = pathId;
+            TileImage = tileImage;
+            Path = path;
         }
     }
 }

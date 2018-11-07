@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace CandyLand
 {
-    public enum Destinations { RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE, GRAMMA_NUT, JOLLY, MR_MINT, PLUMPING, PRINCESS_LOLLY, QUEEN_FROSTINE };
     public class Card
     {
-        private readonly Destinations _destination;
-        public readonly List<string> TargetTiles = new List<string>();
+        public readonly List<Tile> Targets = new List<Tile>();
 
-        public Card(Destinations destination, List<string> targetTile)
+        public Card(List<Tile> targets)
         {
-            _destination = destination;
-            TargetTiles = targetTile;
+            Targets = targets;
         }
     }
 }

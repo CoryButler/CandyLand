@@ -2,9 +2,9 @@
 {
     public class ColorTile : Tile
     {
-        public ColorTile(string id)
+        public ColorTile(TileImages tileImage)
         {
-            Id = id;
+            TileImage = tileImage;
         }
     }
 }

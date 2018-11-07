@@ -8,6 +8,6 @@ namespace CandyLand
 {
     public class Tile
     {
-        public string Id { get; protected set; }
+        public TileImages TileImage { get; protected set; }
     }
 }

@@ -2,9 +2,9 @@
 {
     public class StickyTile : Tile
     {
-        public StickyTile(string id)
+        public StickyTile(TileImages tileImage)
         {
-            Id = id;
+            TileImage = tileImage;
         }
     }
 }
