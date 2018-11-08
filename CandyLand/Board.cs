@@ -13,7 +13,7 @@ namespace CandyLand
             Tiles.Add(new ColorTile(TileImages.PURPLE));
             Tiles.Add(new ColorTile(TileImages.YELLOW));
             Tiles.Add(new ColorTile(TileImages.BLUE));
-            Tiles.Add(new PathEnterenceTile(TileImages.ORANGE, Paths.RAINBOW)); // Rainbow Path
+            Tiles.Add(new PathEnterenceTile(TileImages.ORANGE, Paths.RAINBOW_TRAIL)); // Rainbow Path
             Tiles.Add(new ColorTile(TileImages.GREEN));
 
             Tiles.Add(new ColorTile(TileImages.RED));
@@ -47,7 +47,7 @@ namespace CandyLand
             Tiles.Add(new ColorTile(TileImages.GREEN));
 
             Tiles.Add(new ColorTile(TileImages.RED));
-            Tiles.Add(new PathEnterenceTile(TileImages.PURPLE, Paths.GUMDROP)); // Gumdrop Pass
+            Tiles.Add(new PathEnterenceTile(TileImages.PURPLE, Paths.GUMDROP_PASS)); // Gumdrop Pass
             Tiles.Add(new ColorTile(TileImages.YELLOW));
             Tiles.Add(new ColorTile(TileImages.BLUE));
             Tiles.Add(new ColorTile(TileImages.ORANGE));
@@ -62,7 +62,7 @@ namespace CandyLand
             Tiles.Add(new ColorTile(TileImages.GREEN));
 
             Tiles.Add(new ColorTile(TileImages.RED));
-            Tiles.Add(new PathExitTile(TileImages.PURPLE, Paths.GUMDROP)); // Gumdrop Pass Exit
+            Tiles.Add(new PathExitTile(TileImages.PURPLE, Paths.GUMDROP_PASS)); // Gumdrop Pass Exit
             Tiles.Add(new StickyTile(TileImages.YELLOW));
             Tiles.Add(new ColorTile(TileImages.BLUE));
             Tiles.Add(new ColorTile(TileImages.ORANGE));
@@ -76,7 +76,7 @@ namespace CandyLand
             Tiles.Add(new ColorTile(TileImages.GREEN));
 
             Tiles.Add(new ColorTile(TileImages.RED));
-            Tiles.Add(new PathExitTile(TileImages.PURPLE, Paths.RAINBOW)); // Rainbow Path Exit
+            Tiles.Add(new PathExitTile(TileImages.PURPLE, Paths.RAINBOW_TRAIL)); // Rainbow Path Exit
             Tiles.Add(new ColorTile(TileImages.YELLOW));
             Tiles.Add(new ColorTile(TileImages.BLUE));
             Tiles.Add(new ColorTile(TileImages.ORANGE));
@@ -94,7 +94,7 @@ namespace CandyLand
             Tiles.Add(new ColorTile(TileImages.YELLOW));
             Tiles.Add(new ColorTile(TileImages.BLUE));
             Tiles.Add(new ColorTile(TileImages.ORANGE));
-            Tiles.Add(new CharacterTile(TileImages.GRAMMA_NUT)); // Gramma Nut
+            Tiles.Add(new CharacterTile(TileImages.GRAMMA_NUTT)); // Gramma Nut
             Tiles.Add(new ColorTile(TileImages.GREEN));
 
             Tiles.Add(new ColorTile(TileImages.RED));
@@ -170,7 +170,11 @@ namespace CandyLand
         {
             if (card.Targets[0] is CharacterTile)
             {
-                player.BoardIndex = Tiles.IndexOf(card.Targets[0]);
+                for (int i = 0; i < Tiles.Count; i++)
+                {
+                    if (Tiles[i].TileImage == card.Targets[0].TileImage) player.BoardIndex = i;
+                }
+                Console.WriteLine("{0} visits {1}.\t\tBoard Index: {2}", player.Name, card.Targets[0].TileImage, player.BoardIndex);
             }
             else
             {
@@ -180,18 +184,43 @@ namespace CandyLand
                     player.BoardIndex++;
                     if (player.BoardIndex == Tiles.Count)
                     {
+                        Console.WriteLine("{0} tries to move to {1} but reaches the castle instead.", player.Name, card.Targets[0].TileImage);
                         player.DidWin = true;
+                        return;
                     }
 
-                    while (Tiles[player.BoardIndex] != card.Targets[0])
+                    while (Tiles[player.BoardIndex].TileImage != card.Targets[0].TileImage)
                     {
                         player.BoardIndex++;
                         if (player.BoardIndex == Tiles.Count)
                         {
+                            Console.WriteLine("{0} tries to move to {1} but reaches the castle instead.", player.Name, card.Targets[0].TileImage);
                             player.DidWin = true;
+                            return;
                         }
                     }
+                    Console.WriteLine("{0} moves to {1}.\t\tBoard Index: {2}", player.Name, card.Targets[0].TileImage, player.BoardIndex);
                 }
+            }
+            
+            if (Tiles[player.BoardIndex] is PathEnterenceTile)
+            {
+                for (int i = 0; i < Tiles.Count; i++)
+                {
+                    if (Tiles[i] is PathExitTile)
+                        if (((PathExitTile)Tiles[i]).Path == ((PathEnterenceTile)Tiles[player.BoardIndex]).Path)
+                        {
+                            player.BoardIndex = i;
+                            break;
+                        }
+                }
+                Console.WriteLine("{0} takes the {1}\t\tBoard Index: {2}.", player.Name, ((PathExitTile)Tiles[player.BoardIndex]).Path, player.BoardIndex);
+            }
+
+            if (Tiles[player.BoardIndex] is StickyTile)
+            {
+                player.IsStuck = true;
+                Console.WriteLine("{0} gets stuck.\t\tBoard Index: {1}", player.Name, player.BoardIndex);
             }
         }
     }
