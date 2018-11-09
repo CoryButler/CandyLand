@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CandyLand
 {
@@ -15,32 +16,92 @@ namespace CandyLand
         private Deck _drawDeck = new Deck();
         private Deck _discardDeck = new Deck();
         private List<Player> _players = new List<Player>();
+        private List<string> _availablePlayerColors = new List<string>() { "blue", "green", "red", "yellow" };
 
         public Game()
         {
-            // TODO: Ready users' physical deck from TXT data file.
-            _drawDeck.Initialize();
-            _drawDeck.Shuffle();
-            _drawDeck.Shuffle();
-            _drawDeck.Shuffle();
-            _drawDeck.Shuffle();
-            _drawDeck.Shuffle();
+            Console.WriteLine("Candy Land");
+            SetUpDeck();
+            //_drawDeck.Initialize();
+            //_drawDeck.Shuffle();
+            //_drawDeck.Shuffle();
+            //_drawDeck.Shuffle();
+            //_drawDeck.Shuffle();
+            //_drawDeck.Shuffle();
             SetUpPlayers();
             Play();
             Results();
         }
 
+        // TODO: SetUpDeck() has no error checking.
+        private void SetUpDeck()
+        {
+            Console.WriteLine("\nEnter deck info:\nr - red    \tR - double red\no - orange \tO - double orange\ny - yellow \tY - double yellow\ng - green  \tG - double green\nb - blue   \tB - double blue\np - purple \tP - double purple\n1 - Plumpy\n2 - Mr. Mint\n3 - Jolly\n4 - Gramma Nutt\n5 - Princess Lolly\n6 - Queen Frostine\n");
+            //_drawDeck.ParseString("rrrrrrrroooooooyyyyyyyygggggggbbbbbbbbppppppppRROOYYGGBBPP123456");
+            _drawDeck.ParseString(Console.ReadLine());
+        }
+
+        // TODO: SetUpPlayers sucks.
         private void SetUpPlayers()
         {
-            // TODO: add 2 to 4 players starting with youngest and moving left around the board
-            _players.Add(new Player("Emma  ", 5, PlayerColors.RED));
-            _players.Add(new Player("Cory  ", 30, PlayerColors.GREEN));
-            _players.Add(new Player("Katrin", 36, PlayerColors.BLUE));
-            _players.Add(new Player("Flo   ", 35, PlayerColors.YELLOW));
+            string inputNumPlayers;
+            Console.WriteLine("\nHow many players are there? (2–4)");
+            inputNumPlayers = Console.ReadLine();
+
+            while (inputNumPlayers != "2" && inputNumPlayers != "3" && inputNumPlayers != "4")
+            {
+                Console.WriteLine("\nHow many players are there? (2–4)");
+                inputNumPlayers = Console.ReadLine();
+            }
+
+            int numPlayers = int.Parse(inputNumPlayers);
+
+            Console.WriteLine("\nWho is the youngest player?");
+            string name = Console.ReadLine();
+            
+            string availablePlayerColors = string.Join(", ", _availablePlayerColors);
+            Console.WriteLine("\nWhich color will {0} be? ({1})", name, availablePlayerColors);
+            string color = Console.ReadLine();
+
+            while (!_availablePlayerColors.Any(c => c == color))
+            {
+                availablePlayerColors = string.Join(", ", _availablePlayerColors);
+                Console.WriteLine("\nWhich color will {0} be? ({1})", name, availablePlayerColors);
+                color = Console.ReadLine();
+            }
+
+            _availablePlayerColors.Remove(color);
+            _players.Add(new Player(name, color));
+
+            for (int i = 1; i < numPlayers; i++)
+            {
+                Console.WriteLine("\nWho sits to the left of {0}?", name);
+                name = Console.ReadLine();
+
+
+                if (_availablePlayerColors.Count == 1) color = _availablePlayerColors[0];
+                else
+                {
+                    availablePlayerColors = string.Join(", ", _availablePlayerColors);
+                    Console.WriteLine("\nWhich color will {0} be? ({1})", name, availablePlayerColors);
+                    color = Console.ReadLine();
+
+                    while (!_availablePlayerColors.Any(c => c == color))
+                    {
+                        availablePlayerColors = string.Join(", ", _availablePlayerColors);
+                        Console.WriteLine("\nWhich color will {0} be? ({1})", name, availablePlayerColors);
+                        color = Console.ReadLine();
+                    }
+                }
+                
+                _availablePlayerColors.Remove(color);
+                _players.Add(new Player(name, color));
+            }
         }
 
         private void Play()
         {
+            Console.WriteLine("\nLet's play!\n");
             _currentPlayer = _players.Count - 1;
 
             while (!_isGameOver)
@@ -69,11 +130,14 @@ namespace CandyLand
         {
             return _drawDeck.Cards.Count == 0;
         }
-
+        
+        // TODO: RestoreDrawDeck() has no error checking.
         private void RestoreDrawDeck()
         {
-            Console.WriteLine("\nRestoring Draw Deck\n");
-            _drawDeck.Shuffle(_discardDeck);
+            //Console.WriteLine("\nRestoring Draw Deck\n");
+            //_drawDeck.Shuffle(_discardDeck);
+            Console.WriteLine("\nShuffle the deck and enter card info:\n");
+            _drawDeck.ParseString(Console.ReadLine());
             _discardDeck.Clear();
         }
 
